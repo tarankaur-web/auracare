@@ -1,0 +1,450 @@
+import React, { useEffect, useState, useRef } from "react";
+import axios from "axios";
+
+const AIChatPage = () => {
+
+  const [inputMessage, setInputMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [showQuickResponses, setShowQuickResponses] = useState(true);
+  const [showTyping, setShowTyping] = useState(false);
+
+  const chatRef = useRef(null);
+
+  const QUICK_RESPONSES = [
+    "I'm feeling anxious",
+    "I'm feeling sad",
+    "I'm stressed about school",
+    "I need breathing exercises",
+    "I'm having trouble sleeping"
+  ];
+
+  // AUTO SCROLL
+  useEffect(() => {
+    if (chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    }
+  }, [messages, showTyping]);
+
+  // LOAD CHAT HISTORY
+  useEffect(() => {
+    const persisted = JSON.parse(
+      localStorage.getItem("chatHistory") || "[]"
+    );
+
+    if (persisted.length > 0) {
+      setMessages(persisted);
+      setShowQuickResponses(false);
+    }
+  }, []);
+
+  // SAVE CHAT HISTORY
+  useEffect(() => {
+    if (messages.length) {
+      const last50 = messages.slice(-50);
+
+      localStorage.setItem(
+        "chatHistory",
+        JSON.stringify(last50)
+      );
+    }
+  }, [messages]);
+
+  // SEND MESSAGE
+  const sendMessage = async (text) => {
+
+    if (!text.trim()) return;
+
+    // USER MESSAGE
+    const userMessage = {
+      text,
+      isUser: true,
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      })
+    };
+
+    setMessages((prev) => [
+      ...prev,
+      userMessage
+    ]);
+
+    setInputMessage("");
+    setShowQuickResponses(false);
+    setShowTyping(true);
+
+    try {
+
+      // SEND TO FLASK BACKEND
+      const response = await axios.post(
+        "http://localhost:5000/chat",
+        {
+          message: text
+        }
+      );
+
+      console.log(response.data);
+
+      // BOT MESSAGE
+      const botMessage = {
+        text: response.data.response,
+        isUser: false,
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit"
+        })
+      };
+
+      setTimeout(() => {
+
+        setShowTyping(false);
+
+        setMessages((prev) => [
+          ...prev,
+          botMessage
+        ]);
+
+        setShowQuickResponses(true);
+
+      }, 1200);
+
+    } catch (error) {
+
+      console.log(error);
+
+      setShowTyping(false);
+
+      const errorMessage = {
+        text: "Unable to connect to AI backend.",
+        isUser: false,
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit"
+        })
+      };
+
+      setMessages((prev) => [
+        ...prev,
+        errorMessage
+      ]);
+    }
+  };
+
+  // CLEAR CHAT
+  const clearChat = () => {
+
+    if (
+      window.confirm(
+        "Are you sure you want to clear chat history?"
+      )
+    ) {
+
+      localStorage.removeItem("chatHistory");
+
+      setMessages([]);
+
+      setShowQuickResponses(true);
+    }
+  };
+
+  return (
+    <div className="chat-wrapper">
+
+      <style>{`
+
+        .chat-box-animate {
+          opacity: 0;
+          transform: translateY(30px);
+          animation: slideUpFade 1s ease forwards;
+        }
+
+        @keyframes slideUpFade {
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .chat-wrapper {
+          padding: 20px;
+          min-height: 100vh;
+          background: linear-gradient(140deg, #e9e3fb, #d7efe4);
+          display: flex;
+          justify-content: center;
+          box-sizing: border-box;
+        }
+
+        .chat-box {
+          width: 820px;
+          height: 78vh;
+          background: white;
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.09);
+          display: flex;
+          flex-direction: column;
+        }
+
+        .chat-header {
+          background: #e6defa;
+          padding: 18px 24px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .bot-avatar {
+          width:45px;
+          height:45px;
+          border-radius:50%;
+          background:#009FD9;
+          display:flex;
+          justify-content:center;
+          align-items:center;
+          font-size:22px;
+          color:white;
+          margin-right:10px;
+        }
+
+        .chat-body {
+          padding:14px 20px;
+          flex:1;
+          overflow-y:auto;
+        }
+
+        .message-row {
+          display:flex;
+          flex-direction:column;
+          margin-bottom:14px;
+          animation:fadeInBubble 0.5s ease;
+        }
+
+        .message-row.user {
+          align-items:flex-end;
+        }
+
+        .message-row.bot {
+          align-items:flex-start;
+        }
+
+        .message-bubble {
+          max-width:75%;
+          padding:12px 16px;
+          font-size:14px;
+          white-space:pre-wrap;
+          border-radius:18px;
+        }
+
+        .bot .message-bubble {
+          background:#d3e8fb;
+          color:#000;
+          border-bottom-left-radius:0;
+        }
+
+        .user .message-bubble {
+          background:#5DBAAD;
+          color:#fff;
+          border-bottom-right-radius:0;
+        }
+
+        .timestamp {
+          font-size:11px;
+          color:#666;
+          margin-top:4px;
+        }
+
+        .quick-responses {
+          padding:12px 16px;
+          border-top:1px solid #eee;
+          display:flex;
+          flex-wrap:wrap;
+          gap:10px;
+          background:#fff;
+        }
+
+        .quick-responses button {
+          background:#FFEAD8;
+          padding:8px 16px;
+          border:none;
+          border-radius:18px;
+          font-size:13px;
+          color:#5d3d29;
+          cursor:pointer;
+        }
+
+        .chat-input {
+          padding:12px 16px;
+          border-top:1px solid #eee;
+          background:#fff;
+          display:flex;
+          gap:12px;
+        }
+
+        .chat-input textarea {
+          flex:1;
+          padding:10px 14px;
+          resize:none;
+          font-size:14px;
+          border:1px solid #ccc;
+          border-radius:10px;
+          color:#000;
+        }
+
+        .chat-input button {
+          background:#68b7b2;
+          color:#fff;
+          font-weight:600;
+          padding:10px 22px;
+          border:none;
+          border-radius:10px;
+          cursor:pointer;
+        }
+
+      `}</style>
+
+      <div className="chat-box chat-box-animate">
+
+        <div className="chat-header">
+
+          <div style={{
+            display: "flex",
+            alignItems: "center"
+          }}>
+
+            <div className="bot-avatar">
+              🤖
+            </div>
+
+            <div>
+              <div style={{ color: 'black' }}>
+                <strong>Mindlink</strong>
+              </div>
+
+              <div style={{
+                fontSize: '12px',
+                color: 'green'
+              }}>
+                Online • AI Support
+              </div>
+            </div>
+
+          </div>
+
+          <button
+            className="clear-button"
+            onClick={clearChat}
+            style={{ color: 'black' }}
+          >
+            Clear Chat
+          </button>
+
+        </div>
+
+        <div className="chat-body" ref={chatRef}>
+
+          {messages.length === 0 && (
+            <div className="message-row bot">
+
+              <div className="message-bubble">
+                Hi there! I'm MindBot 😊
+                <br /><br />
+                I'm here to support your mental wellness.
+                How are you feeling today?
+              </div>
+
+            </div>
+          )}
+
+          {messages.map((msg, i) => (
+
+            <div
+              key={i}
+              className={`message-row ${
+                msg.isUser ? "user" : "bot"
+              }`}
+            >
+
+              <div className="message-bubble">
+                {msg.text}
+              </div>
+
+              <div className="timestamp">
+                {msg.timestamp}
+              </div>
+
+            </div>
+
+          ))}
+
+          {showTyping && (
+            <div className="message-row bot">
+
+              <div className="message-bubble">
+                Typing...
+              </div>
+
+            </div>
+          )}
+
+        </div>
+
+        {showQuickResponses && (
+
+          <div className="quick-responses">
+
+            {QUICK_RESPONSES.map((q) => (
+
+              <button
+                key={q}
+                onClick={() => sendMessage(q)}
+              >
+                {q}
+              </button>
+
+            ))}
+
+          </div>
+
+        )}
+
+        <div className="chat-input">
+
+          <textarea
+            rows="1"
+            placeholder="Type your message here..."
+            value={inputMessage}
+            onChange={(e) =>
+              setInputMessage(e.target.value)
+            }
+            onKeyDown={(e) => {
+
+              if (
+                e.key === "Enter" &&
+                !e.shiftKey
+              ) {
+
+                e.preventDefault();
+
+                sendMessage(inputMessage);
+              }
+            }}
+          />
+
+          <button
+            onClick={() =>
+              sendMessage(inputMessage)
+            }
+            disabled={!inputMessage.trim()}
+          >
+            Send
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+  );
+};
+
+export default AIChatPage;

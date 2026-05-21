@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindLink - Your Mental Wellness Journey</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="theme-color" content="#21808D">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-background" id="animated-bg">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <div class="logo">
+                    <span class="logo-icon">🧠</span>
+                    <span class="logo-text">MindLink</span>
+                </div>
+                <div class="nav-links" id="nav-links">
+                    <button class="nav-link" data-route="/">Home</button>
+                    <button class="nav-link" data-route="/dashboard">Dashboard</button>
+                    <button class="nav-link" data-route="/mood">Mood Tracker</button>
+                    <button class="nav-link" data-route="/journal">Journal</button>
+                    <button class="nav-link" data-route="/chat">AI Chat</button>
+                    <button class="nav-link" data-route="/assessments">Assessments</button>
+                    <button class="nav-link" data-route="/resources">Resources</button>
+                    <button class="btn btn--primary btn--sm" id="settings-btn">Settings</button>
+                </div>
+                <button class="mobile-menu-toggle" id="mobile-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Landing Page -->
+    <section id="landing" class="route-content active">
+        <div class="hero">
+            <div class="hero-bg">
+                <div class="floating-shapes">
+                    <div class="shape shape-1"></div>
+                    <div class="shape shape-2"></div>
+                    <div class="shape shape-3"></div>
+                    <div class="shape shape-4"></div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1 class="hero-title">Welcome to MindLink</h1>
+                        <p class="hero-subtitle">Your personalized mental wellness companion designed specifically for teenagers. Take assessments, track your mood, chat with AI support, and get the help you deserve - all in a safe, private space.</p>
+                        <div class="hero-stats">
+                            <div class="stat">
+                                <div class="stat-number">10%</div>
+                                <div class="stat-label">of teens need mental health support</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">70%</div>
+                                <div class="stat-label">improvement with early intervention</div>
+                            </div>
+                        </div>
+                        <div class="hero-actions">
+                            <button class="btn btn--primary btn--lg pulse" data-route="/onboard">Get Started</button>
+                            <button class="btn btn--outline btn--lg" id="learn-more">Learn More</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Features Section -->
+        <div class="features-section">
+            <div class="container">
+                <h2 class="section-title">Everything you need for mental wellness</h2>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon">😊</div>
+                        <h3>Mood Tracking</h3>
+                        <p>Track your daily emotions and discover patterns with beautiful visualizations</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🤖</div>
+                        <h3>AI Support Chat</h3>
+                        <p>24/7 AI companion trained to provide empathetic support and coping strategies</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📋</div>
+                        <h3>Mental Health Assessments</h3>
+                        <p>Evidence-based screenings for depression, anxiety, and stress levels</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📱</div>
+                        <h3>Private & Secure</h3>
+                        <p>Your data stays on your device. Complete privacy and control over your information</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Onboarding -->
+    <section id="onboard" class="route-content">
+        <div class="container">
+            <div class="onboard-container">
+                <div class="onboard-progress">
+                    <div class="progress-dots">
+                        <div class="dot active" data-step="1"></div>
+                        <div class="dot" data-step="2"></div>
+                        <div class="dot" data-step="3"></div>
+                        <div class="dot" data-step="4"></div>
+                    </div>
+                </div>
+                
+                <!-- Step 1: Welcome -->
+                <div class="onboard-step active" data-step="1">
+                    <div class="step-content">
+                        <div class="step-icon">👋</div>
+                        <h2>Welcome to MindLink!</h2>
+                        <p>Let's set up your personal mental wellness space. This will only take a few minutes and everything stays private on your device.</p>
+                        <div class="step-actions">
+                            <button class="btn btn--primary" id="start-onboard">Let's Begin</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Nickname -->
+                <div class="onboard-step" data-step="2">
+                    <div class="step-content">
+                        <div class="step-icon">😊</div>
+                        <h2>What should we call you?</h2>
+                        <p>Choose a nickname that makes you comfortable. You can change this anytime.</p>
+                        <div class="form-group">
+                            <input type="text" id="onboard-nickname" class="form-control" placeholder="Enter your nickname" maxlength="20">
+                        </div>
+                        <div class="step-actions">
+                            <button class="btn btn--outline" id="onboard-back-2">Back</button>
+                            <button class="btn btn--primary" id="onboard-next-2">Continue</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Avatar -->
+                <div class="onboard-step" data-step="3">
+                    <div class="step-content">
+                        <div class="step-icon">🎨</div>
+                        <h2>Choose your avatar</h2>
+                        <p>Pick an avatar that represents you!</p>
+                        <div class="avatar-grid">
+                            <button class="avatar-option" data-avatar="😊">😊</button>
+                            <button class="avatar-option" data-avatar="😎">😎</button>
+                            <button class="avatar-option" data-avatar="🌟">🌟</button>
+                            <button class="avatar-option" data-avatar="🦄">🦄</button>
+                            <button class="avatar-option" data-avatar="🌈">🌈</button>
+                            <button class="avatar-option" data-avatar="🎭">🎭</button>
+                            <button class="avatar-option" data-avatar="🌸">🌸</button>
+                            <button class="avatar-option" data-avatar="⚡">⚡</button>
+                        </div>
+                        <div class="step-actions">
+                            <button class="btn btn--outline" id="onboard-back-3">Back</button>
+                            <button class="btn btn--primary" id="onboard-next-3">Continue</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Privacy & Complete -->
+                <div class="onboard-step" data-step="4">
+                    <div class="step-content">
+                        <div class="step-icon">🔒</div>
+                        <h2>Your Privacy Matters</h2>
+                        <div class="privacy-info">
+                            <div class="privacy-item">
+                                <span class="privacy-icon">📱</span>
+                                <span>All data stays on your device</span>
+                            </div>
+                            <div class="privacy-item">
+                                <span class="privacy-icon">🔐</span>
+                                <span>No personal information is shared</span>
+                            </div>
+                            <div class="privacy-item">
+                                <span class="privacy-icon">🗑️</span>
+                                <span>You can delete everything anytime</span>
+                            </div>
+                        </div>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="privacy-consent">
+                                <span class="checkmark"></span>
+                                I understand and agree to these privacy practices
+                            </label>
+                        </div>
+                        <div class="step-actions">
+                            <button class="btn btn--outline" id="onboard-back-4">Back</button>
+                            <button class="btn btn--primary" id="complete-onboard" disabled>Complete Setup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard -->
+    <section id="dashboard" class="route-content">
+        <div class="container">
+            <div class="dashboard-header">
+                <div class="user-greeting">
+                    <div class="user-avatar" id="user-avatar">😊</div>
+                    <div class="greeting-text">
+                        <h1 class="greeting">Good <span id="time-of-day">morning</span>, <span id="user-nickname">Friend</span>! 👋</h1>
+                        <p class="dashboard-subtitle">How are you feeling today?</p>
+                    </div>
+                </div>
+                
+                <div class="quick-mood-check">
+                    <h3>Quick Mood Check</h3>
+                    <div class="mood-quick-buttons">
+                        <button class="mood-quick-btn" data-mood="1">😔</button>
+                        <button class="mood-quick-btn" data-mood="2">😕</button>
+                        <button class="mood-quick-btn" data-mood="3">😐</button>
+                        <button class="mood-quick-btn" data-mood="4">😊</button>
+                        <button class="mood-quick-btn" data-mood="5">😄</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="card feature-card hover-lift" data-route="/mood">
+                    <div class="card-icon">📊</div>
+                    <h3>Mood Tracker</h3>
+                    <p>Log your daily mood and see trends over time</p>
+                    <div class="card-stats" id="mood-stats">
+                        <span class="stat-value">-</span>
+                        <span class="stat-label">days tracked</span>
+                    </div>
+                    <div class="card-action">
+                        <button class="btn btn--outline">Track Mood</button>
+                    </div>
+                </div>
+
+                <div class="card feature-card hover-lift" data-route="/journal">
+                    <div class="card-icon">📝</div>
+                    <h3>Private Journal</h3>
+                    <p>Write about your thoughts and feelings with AI insights</p>
+                    <div class="card-stats" id="journal-stats">
+                        <span class="stat-value">-</span>
+                        <span class="stat-label">entries written</span>
+                    </div>
+                    <div class="card-action">
+                        <button class="btn btn--outline">Start Writing</button>
+                    </div>
+                </div>
+
+                <div class="card feature-card hover-lift" data-route="/chat">
+                    <div class="card-icon">🤖</div>
+                    <h3>AI Support Chat</h3>
+                    <p>Talk to your AI companion for support and guidance</p>
+                    <div class="card-stats">
+                        <span class="stat-value">24/7</span>
+                        <span class="stat-label">available</span>
+                    </div>
+                    <div class="card-action">
+                        <button class="btn btn--outline">Start Chat</button>
+                    </div>
+                </div>
+
+                <div class="card feature-card hover-lift" data-route="/assessments">
+                    <div class="card-icon">🔍</div>
+                    <h3>Mental Health Assessments</h3>
+                    <p>Take evidence-based screenings for depression, anxiety & stress</p>
+                    <div class="card-stats" id="assessment-stats">
+                        <span class="stat-value">-</span>
+                        <span class="stat-label">assessments taken</span>
+                    </div>
+                    <div class="card-action">
+                        <button class="btn btn--outline">Take Assessment</button>
+                    </div>
+                </div>
+
+                <div class="card feature-card hover-lift" data-route="/resources">
+                    <div class="card-icon">🆘</div>
+                    <h3>Crisis Support</h3>
+                    <p>Find immediate help and professional resources near you</p>
+                    <div class="emergency-contact">
+                        <a href="tel:1800-599-0019" class="btn btn--primary btn--sm">Emergency: 1800-599-0019</a>
+                    </div>
+                    <div class="card-action">
+                        <button class="btn btn--outline">Find Resources</button>
+                    </div>
+                </div>
+
+                <div class="card feature-card breathing-card">
+                    <div class="card-icon">🫁</div>
+                    <h3>Breathing Exercise</h3>
+                    <p>Take a moment to center yourself with guided breathing</p>
+                    <div class="breathing-circle" id="breathing-circle">
+                        <div class="breathing-text">Breathe</div>
+                    </div>
+                    <div class="card-action">
+                        <button class="btn btn--outline" id="start-breathing">Start Exercise</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mood Tracker -->
+    <section id="mood" class="route-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Mood Tracker</h1>
+                <p>How are you feeling today? Track your mood to understand patterns and triggers.</p>
+            </div>
+
+            <div class="mood-selector">
+                <h3>Today's Mood</h3>
+                <div class="mood-options">
+                    <button class="mood-btn" data-mood="1">
+                        <div class="mood-emoji">😔</div>
+                        <span>Very Low</span>
+                        <div class="mood-description">Feeling really down, hopeless</div>
+                    </button>
+                    <button class="mood-btn" data-mood="2">
+                        <div class="mood-emoji">😕</div>
+                        <span>Low</span>
+                        <div class="mood-description">Sad, unmotivated</div>
+                    </button>
+                    <button class="mood-btn" data-mood="3">
+                        <div class="mood-emoji">😐</div>
+                        <span>Neutral</span>
+                        <div class="mood-description">Okay, nothing special</div>
+                    </button>
+                    <button class="mood-btn" data-mood="4">
+                        <div class="mood-emoji">😊</div>
+                        <span>Good</span>
+                        <div class="mood-description">Happy, content</div>
+                    </button>
+                    <button class="mood-btn" data-mood="5">
+                        <div class="mood-emoji">😄</div>
+                        <span>Great</span>
+                        <div class="mood-description">Excited, energetic</div>
+                    </button>
+                </div>
+                
+                <div class="mood-notes">
+                    <h4>What's affecting your mood today?</h4>
+                    <textarea id="mood-notes" placeholder="Optional: Add a note about what's influencing your mood..." maxlength="200"></textarea>
+                    <button class="btn btn--primary" id="save-mood">Save Mood Entry</button>
+                </div>
+            </div>
+
+            <div class="mood-insights">
+                <div class="insight-card">
+                    <h3>Mood Trends (Last 7 Days)</h3>
+                    <div class="mood-chart-container" style="position: relative; height: 300px;">
+                        <canvas id="mood-trend-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="insight-card">
+                    <h3>Monthly Overview</h3>
+                    <div class="mood-calendar" id="mood-calendar">
+                        <!-- Generated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Journal -->
+    <section id="journal" class="route-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Private Journal</h1>
+                <p>Write about your thoughts and feelings. Your entries are completely private and secure.</p>
+            </div>
+
+            <div class="journal-interface">
+                <div class="journal-editor">
+                    <div class="editor-header">
+                        <h3>New Entry</h3>
+                        <div class="editor-tools">
+                            <button class="tool-btn" id="add-emoji" title="Add emoji">😊</button>
+                            <button class="tool-btn" id="word-count" title="Word count">0 words</button>
+                        </div>
+                    </div>
+                    <textarea id="journal-entry" placeholder="What's on your mind today? How are you feeling? What happened that was significant?" maxlength="5000"></textarea>
+                    <div class="journal-actions">
+                        <div class="sentiment-indicator" id="sentiment-indicator">
+                            <span class="sentiment-icon" id="sentiment-icon">😐</span>
+                            <span class="sentiment-label" id="sentiment-label">Neutral</span>
+                            <div class="sentiment-description" id="sentiment-description">Your writing tone seems balanced</div>
+                        </div>
+                        <div class="entry-actions">
+                            <button class="btn btn--outline" id="clear-entry">Clear</button>
+                            <button class="btn btn--primary" id="save-entry">Save Entry</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="journal-sidebar">
+                    <div class="journal-entries">
+                        <h3>Recent Entries</h3>
+                        <div class="entries-filter">
+                            <select id="entries-filter" class="form-control">
+                                <option value="all">All entries</option>
+                                <option value="positive">Positive entries</option>
+                                <option value="negative">Difficult entries</option>
+                                <option value="neutral">Neutral entries</option>
+                            </select>
+                        </div>
+                        <div id="entries-list">
+                            <!-- Generated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="journal-insights">
+                        <h3>Writing Insights</h3>
+                        <div class="insight-item">
+                            <span class="insight-label">Total entries:</span>
+                            <span class="insight-value" id="total-entries">0</span>
+                        </div>
+                        <div class="insight-item">
+                            <span class="insight-label">Writing streak:</span>
+                            <span class="insight-value" id="writing-streak">0 days</span>
+                        </div>
+                        <div class="insight-item">
+                            <span class="insight-label">Most common mood:</span>
+                            <span class="insight-value" id="common-mood">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Chat -->
+    <section id="chat" class="route-content">
+        <div class="container">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div class="chat-bot-info">
+                        <div class="bot-avatar">🤖</div>
+                        <div class="bot-details">
+                            <h3>MindBot</h3>
+                            <p class="bot-status">Online • Here to help</p>
+                        </div>
+                    </div>
+                    <button class="btn btn--outline btn--sm" id="clear-chat">Clear Chat</button>
+                </div>
+
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message bot-message">
+                        <div class="message-avatar">🤖</div>
+                        <div class="message-content">
+                            <div class="message-text">Hi there! I'm MindBot, your AI companion. I'm here to listen, support, and help you with coping strategies. How are you feeling today?</div>
+                            <div class="message-time">Now</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-responses" id="quick-responses">
+                    <button class="quick-response-btn">I'm feeling anxious</button>
+                    <button class="quick-response-btn">I'm feeling sad</button>
+                    <button class="quick-response-btn">I'm stressed about school</button>
+                    <button class="quick-response-btn">I need breathing exercises</button>
+                    <button class="quick-response-btn">I'm having trouble sleeping</button>
+                </div>
+
+                <div class="chat-input-container">
+                    <div class="typing-indicator hidden" id="typing-indicator">
+                        <div class="typing-avatar">🤖</div>
+                        <div class="typing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="chat-input">
+                        <textarea id="chat-input-field" placeholder="Type your message here..." rows="1" maxlength="1000"></textarea>
+                        <button class="btn btn--primary" id="send-message" disabled>Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Assessments -->
+    <section id="assessments" class="route-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Mental Health Assessments</h1>
+                <p>Take evidence-based screenings to better understand your mental health. These are screening tools, not diagnostic tests.</p>
+            </div>
+
+            <div class="assessment-grid">
+                <div class="card assessment-card" data-assessment="PHQ9">
+                    <div class="assessment-header">
+                        <div class="card-icon">😔</div>
+                        <div class="assessment-badge">Clinical</div>
+                    </div>
+                    <h3>Depression Screening (PHQ-9)</h3>
+                    <p>A 9-question assessment that screens for symptoms of depression over the past two weeks.</p>
+                    <div class="assessment-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">⏱️</span>
+                            <span>5 minutes</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">❓</span>
+                            <span>9 questions</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">📊</span>
+                            <span>Evidence-based</span>
+                        </div>
+                    </div>
+                    <div class="last-result" id="phq9-last-result" style="display: none;">
+                        <span class="result-badge"></span>
+                    </div>
+                    <button class="btn btn--primary">Take Assessment</button>
+                </div>
+
+                <div class="card assessment-card" data-assessment="GAD7">
+                    <div class="assessment-header">
+                        <div class="card-icon">😰</div>
+                        <div class="assessment-badge">Clinical</div>
+                    </div>
+                    <h3>Anxiety Screening (GAD-7)</h3>
+                    <p>A 7-question assessment that measures anxiety symptoms and their severity.</p>
+                    <div class="assessment-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">⏱️</span>
+                            <span>4 minutes</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">❓</span>
+                            <span>7 questions</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">📊</span>
+                            <span>Evidence-based</span>
+                        </div>
+                    </div>
+                    <div class="last-result" id="gad7-last-result" style="display: none;">
+                        <span class="result-badge"></span>
+                    </div>
+                    <button class="btn btn--primary">Take Assessment</button>
+                </div>
+
+                <div class="card assessment-card" data-assessment="PSS10">
+                    <div class="assessment-header">
+                        <div class="card-icon">🤯</div>
+                        <div class="assessment-badge">Research</div>
+                    </div>
+                    <h3>Stress Assessment (PSS-10)</h3>
+                    <p>A 10-question assessment of how stressful you perceive situations in your life to be.</p>
+                    <div class="assessment-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">⏱️</span>
+                            <span>6 minutes</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">❓</span>
+                            <span>10 questions</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">📊</span>
+                            <span>Validated scale</span>
+                        </div>
+                    </div>
+                    <div class="last-result" id="pss10-last-result" style="display: none;">
+                        <span class="result-badge"></span>
+                    </div>
+                    <button class="btn btn--primary">Take Assessment</button>
+                </div>
+
+                <div class="card assessment-card teen-wellness">
+                    <div class="assessment-header">
+                        <div class="card-icon">🌟</div>
+                        <div class="assessment-badge">Custom</div>
+                    </div>
+                    <h3>Teen Wellness Check</h3>
+                    <p>A comprehensive check-in about various aspects of your life and wellbeing.</p>
+                    <div class="assessment-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">⏱️</span>
+                            <span>8 minutes</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">❓</span>
+                            <span>15 questions</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🎯</span>
+                            <span>Teen-focused</span>
+                        </div>
+                    </div>
+                    <button class="btn btn--primary" onclick="alert('Coming soon! This assessment is being developed.')">Coming Soon</button>
+                </div>
+            </div>
+
+            <div class="assessment-history">
+                <h3>Your Assessment History</h3>
+                <div class="history-chart-container" style="position: relative; height: 250px;">
+                    <canvas id="assessment-history-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quiz Interface -->
+    <section id="quiz" class="route-content">
+        <div class="container">
+            <div class="quiz-container">
+                <div class="quiz-header">
+                    <h2 id="quiz-title"></h2>
+                    <div class="quiz-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
+                        <span class="progress-text" id="progress-text"></span>
+                    </div>
+                    <div class="quiz-controls">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="all-at-once-toggle">
+                            <span class="slider"></span>
+                            Show all questions at once
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="quiz-content" id="quiz-content">
+                    <!-- Generated by JavaScript -->
+                </div>
+
+                <div class="quiz-actions">
+                    <button class="btn btn--outline" id="prev-question">Previous</button>
+                    <button class="btn btn--primary" id="next-question">Next</button>
+                    <button class="btn btn--primary hidden" id="submit-quiz">Submit Assessment</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quiz Results -->
+    <section id="quiz-results" class="route-content">
+        <div class="container">
+            <div class="results-container">
+                <div class="results-header">
+                    <div class="result-icon" id="result-icon">📊</div>
+                    <h2>Your Assessment Results</h2>
+                    <div class="result-gauge-container" style="position: relative; height: 250px;">
+                        <canvas id="result-gauge" width="250" height="250"></canvas>
+                    </div>
+                    <div class="result-summary">
+                        <h3 id="result-level"></h3>
+                        <div class="result-score">
+                            <span id="result-score-text"></span>
+                        </div>
+                        <p id="result-description"></p>
+                    </div>
+                </div>
+                
+                <div class="result-recommendations">
+                    <h3>Personalized Recommendations</h3>
+                    <div id="recommendations-content"></div>
+                </div>
+
+                <div class="result-actions">
+                    <button class="btn btn--primary" id="save-result">Save Result</button>
+                    <button class="btn btn--outline" id="find-support">Find Support Near You</button>
+                    <button class="btn btn--outline" data-route="/assessments">Take Another Assessment</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resources -->
+    <section id="resources" class="route-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Mental Health Resources</h1>
+                <p>Find professional support, crisis help, and mental health resources in your area.</p>
+            </div>
+
+            <div class="emergency-banner">
+                <div class="emergency-content">
+                    <div class="emergency-icon">🆘</div>
+                    <div class="emergency-text">
+                        <h3>In Crisis? Get Immediate Help</h3>
+                        <p>If you're having thoughts of self-harm or suicide, please reach out immediately</p>
+                    </div>
+                    <div class="emergency-actions">
+                        <a href="tel:1800-599-0019" class="btn btn--primary">Call KIRAN: 1800-599-0019</a>
+                        <a href="tel:112" class="btn btn--outline">Emergency: 112</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="resources-filters">
+                <div class="filter-group">
+                    <label for="location-filter">Filter by location:</label>
+                    <select id="location-filter" class="form-control">
+                        <option value="">All locations</option>
+                        <option value="national">National</option>
+                        <option value="delhi">Delhi</option>
+                        <option value="mumbai">Mumbai</option>
+                        <option value="bangalore">Bangalore</option>
+                        <option value="chennai">Chennai</option>
+                        <option value="kolkata">Kolkata</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="type-filter">Filter by type:</label>
+                    <select id="type-filter" class="form-control">
+                        <option value="">All types</option>
+                        <option value="helpline">Helplines</option>
+                        <option value="hospital">Hospitals</option>
+                        <option value="ngo">NGOs</option>
+                        <option value="professional">Professionals</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="resources-grid" id="resources-grid">
+                <!-- Generated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="modal-close" id="close-settings">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-group">
+                    <h3>Profile</h3>
+                    <div class="setting-item">
+                        <label for="nickname-input">Your Nickname</label>
+                        <div class="input-group">
+                            <input type="text" id="nickname-input" class="form-control" placeholder="Enter your nickname" maxlength="20">
+                            <button class="btn btn--outline btn--sm" id="save-nickname">Save</button>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label>Your Avatar</label>
+                        <div class="avatar-selector">
+                            <div class="current-avatar" id="current-avatar-display">😊</div>
+                            <button class="btn btn--outline btn--sm" id="change-avatar">Change</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-group">
+                    <h3>Appearance</h3>
+                    <div class="setting-item">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="theme-toggle">
+                            <span class="slider"></span>
+                            Dark Mode
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="animations-toggle" checked>
+                            <span class="slider"></span>
+                            Enable Animations
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="settings-group">
+                    <h3>Privacy & Data</h3>
+                    <div class="data-summary">
+                        <div class="data-item">
+                            <span>Mood entries:</span>
+                            <span id="mood-count">-</span>
+                        </div>
+                        <div class="data-item">
+                            <span>Journal entries:</span>
+                            <span id="journal-count">-</span>
+                        </div>
+                        <div class="data-item">
+                            <span>Assessment results:</span>
+                            <span id="assessment-count">-</span>
+                        </div>
+                    </div>
+                    
+                    <div class="data-actions">
+                        <button class="btn btn--outline btn--sm" id="export-data">Export My Data</button>
+                        <button class="btn btn--outline btn--sm" id="clear-mood-data">Clear Mood Data</button>
+                        <button class="btn btn--outline btn--sm" id="clear-journal-data">Clear Journal</button>
+                        <button class="btn btn--outline btn--sm" id="clear-results-data">Clear Results</button>
+                        <button class="btn btn--outline btn--sm destructive" id="clear-all-data">Clear All Data</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Avatar Selection Modal -->
+    <div id="avatar-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Choose Your Avatar</h2>
+                <button class="modal-close" id="close-avatar-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="avatar-grid large">
+                    <button class="avatar-option-large" data-avatar="😊">😊</button>
+                    <button class="avatar-option-large" data-avatar="😎">😎</button>
+                    <button class="avatar-option-large" data-avatar="🌟">🌟</button>
+                    <button class="avatar-option-large" data-avatar="🦄">🦄</button>
+                    <button class="avatar-option-large" data-avatar="🌈">🌈</button>
+                    <button class="avatar-option-large" data-avatar="🎭">🎭</button>
+                    <button class="avatar-option-large" data-avatar="🌸">🌸</button>
+                    <button class="avatar-option-large" data-avatar="⚡">⚡</button>
+                    <button class="avatar-option-large" data-avatar="🎨">🎨</button>
+                    <button class="avatar-option-large" data-avatar="🎵">🎵</button>
+                    <button class="avatar-option-large" data-avatar="🚀">🚀</button>
+                    <button class="avatar-option-large" data-avatar="🌺">🌺</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Support Near You Modal -->
+    <div id="support-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Support Near You</h2>
+                <button class="modal-close" id="close-support">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="location-status"></div>
+                <div id="nearest-resources"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Snackbar for notifications -->
+    <div id="snackbar" class="snackbar hidden">
+        <div class="snackbar-content">
+            <span id="snackbar-message"></span>
+            <button id="snackbar-close">&times;</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
