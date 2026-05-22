@@ -15,6 +15,7 @@ const AIChatPage = () => {
   const QUICK_RESPONSES = [
     "I'm feeling anxious",
     "I'm feeling sad",
+    "I'm feeling joyful",
     "I'm stressed about school",
     "I need breathing exercises",
     "I'm having trouble sleeping"
@@ -29,42 +30,54 @@ const AIChatPage = () => {
     return "evening";
   };
 
+  const phraseRegex = (phrase) =>
+    new RegExp(`(^|\\s)${phrase}(\\s|$)`);
+
   const getGreetingResponse = (text) => {
     const normalized = text.trim().toLowerCase();
 
-    const greetings = [
+    if (phraseRegex("good morning").test(normalized)) {
+      return "Good morning! ☀️ How can I help you today?";
+    }
+
+    if (phraseRegex("good afternoon").test(normalized)) {
+      return "Good afternoon! 🌤️ How can I support you today?";
+    }
+
+    if (phraseRegex("good evening").test(normalized)) {
+      return "Good evening! 🌙 How are you feeling tonight?";
+    }
+
+    const simpleGreetings = [
       "hello",
       "hi",
       "hey",
-      "good morning",
-      "good afternoon",
-      "good evening"
+      "hlo",
+      "hiiii",
+      "hiya"
     ];
+
+    if (
+      simpleGreetings.some((word) =>
+        phraseRegex(word).test(normalized)
+      )
+    ) {
+      return "Hello! 😊 I'm here for you. How can I help today?";
+    }
 
     const farewells = [
       "bye",
       "goodbye",
       "good night",
-      "see you"
+      "see you",
+      "by"
     ];
 
-    const isGreeting = greetings.some(
-      (word) =>
-        normalized === word ||
-        normalized.startsWith(word + " ")
-    );
-
-    if (isGreeting) {
-      return `Good ${getTimePeriod()}! 😊 How can I help you today?`;
-    }
-
-    const isFarewell = farewells.some(
-      (word) =>
-        normalized === word ||
-        normalized.startsWith(word + " ")
-    );
-
-    if (isFarewell) {
+    if (
+      farewells.some((word) =>
+        phraseRegex(word).test(normalized)
+      )
+    ) {
       return "Take care! 👋 I'm always here for you.";
     }
 
@@ -74,29 +87,31 @@ const AIChatPage = () => {
   const getQuickResponseReply = (text) => {
     const normalized = text.trim().toLowerCase();
 
-    switch (normalized) {
-      case "i'm feeling anxious":
-      case "im feeling anxious":
-        return "That sounds really difficult 😟 Try taking slow deep breaths. You are safe and not alone.";
-
-      case "i'm feeling sad":
-      case "im feeling sad":
-        return "I'm sorry you're feeling sad 💛 It's okay to take things slowly today.";
-
-      case "i'm stressed about school":
-      case "im stressed about school":
-        return "School stress can feel overwhelming 📚 Try dividing your work into smaller tasks.";
-
-      case "i need breathing exercises":
-        return "Try this 🌬️ Inhale for 4 seconds, hold for 4, exhale for 6.";
-
-      case "i'm having trouble sleeping":
-      case "im having trouble sleeping":
-        return "Try dimming lights and avoiding screens before bed 🌙";
-
-      default:
-        return null;
+    if (/(anxious|anxiety|worried|nervous|panic|fearful)/.test(normalized)) {
+      return "That sounds really difficult 😟 Try taking slow, deep breaths. You are safe and not alone.";
     }
+
+    if (/(sad|depressed|down|unhappy|lonely|hopeless|tearful|blue)/.test(normalized)) {
+      return "I'm sorry you're feeling sad 💛 It's okay to take things slowly today.";
+    }
+
+    if (/(joyful|happy|wonderful|excited|cheerful|grateful|blessed)/.test(normalized)) {
+      return "That's wonderful to hear 😊 Keep enjoying the good moments and take care of yourself.";
+    }
+
+    if (/(stress|stressed|overwhelmed|pressure|deadline|exam|school)/.test(normalized)) {
+      return "School or life stress can feel overwhelming 📚 Try breaking tasks into smaller steps and give yourself a short rest.";
+    }
+
+    if (/(sleep|sleeping|insomnia|can't sleep|cannot sleep|trouble sleeping)/.test(normalized)) {
+      return "Try dimming lights and avoiding screens before bed 🌙 A calm bedtime routine can help you relax.";
+    }
+
+    if (/(breathe|breathing|breath)/.test(normalized)) {
+      return "Try this 🌬️ Inhale for 4 seconds, hold for 4, exhale for 6. Repeat a few times and notice how your body feels.";
+    }
+
+    return null;
   };
 
   useEffect(() => {

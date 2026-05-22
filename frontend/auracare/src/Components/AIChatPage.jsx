@@ -13,10 +13,104 @@ const AIChatPage = () => {
   const QUICK_RESPONSES = [
     "I'm feeling anxious",
     "I'm feeling sad",
+    "I'm feeling joyful",
     "I'm stressed about school",
     "I need breathing exercises",
     "I'm having trouble sleeping"
   ];
+
+  const getTimePeriod = () => {
+    const hour = new Date().getHours();
+
+    if (hour < 12) return "morning";
+    if (hour < 18) return "afternoon";
+
+    return "evening";
+  };
+
+  const phraseRegex = (phrase) =>
+    new RegExp(`(^|\\s)${phrase}(\\s|$)`);
+
+  const getGreetingResponse = (text) => {
+    const normalized = text.trim().toLowerCase();
+
+    if (phraseRegex("good morning").test(normalized)) {
+      return "Good morning! ☀️ How can I help you today?";
+    }
+
+    if (phraseRegex("good afternoon").test(normalized)) {
+      return "Good afternoon! 🌤️ How can I support you today?";
+    }
+
+    if (phraseRegex("good evening").test(normalized)) {
+      return "Good evening! 🌙 How are you feeling tonight?";
+    }
+
+    const simpleGreetings = [
+      "hello",
+      "hi",
+      "hey",
+      "hlo",
+      "hii",
+      "hiya"
+    ];
+
+    if (
+      simpleGreetings.some((word) =>
+        phraseRegex(word).test(normalized)
+      )
+    ) {
+      return "Hello! 😊 I'm here for you. How can I help today?";
+    }
+
+    const farewells = [
+      "bye",
+      "goodbye",
+      "good night",
+      "see you",
+      "by"
+    ];
+
+    if (
+      farewells.some((word) =>
+        phraseRegex(word).test(normalized)
+      )
+    ) {
+      return "Take care! 👋 I'm always here for you.";
+    }
+
+    return null;
+  };
+
+  const getQuickResponseReply = (text) => {
+    const normalized = text.trim().toLowerCase();
+
+    if (/(anxious|anxiety|worried|nervous|panic|fearful)/.test(normalized)) {
+      return "That sounds really difficult 😟 Try taking slow, deep breaths. You are safe and not alone.";
+    }
+
+    if (/(sad|depressed|down|unhappy|lonely|hopeless|tearful|blue)/.test(normalized)) {
+      return "I'm sorry you're feeling sad 💛 It's okay to take things slowly today.";
+    }
+
+    if (/(joyful|happy|wonderful|excited|cheerful|grateful|blessed)/.test(normalized)) {
+      return "That's wonderful to hear 😊 Keep enjoying the good moments and take care of yourself.";
+    }
+
+    if (/(stress|stressed|overwhelmed|pressure|deadline|exam|school)/.test(normalized)) {
+      return "School or life stress can feel overwhelming 📚 Try breaking tasks into smaller steps and give yourself a short rest.";
+    }
+
+    if (/(sleep|sleeping|insomnia|can't sleep|cannot sleep|trouble sleeping)/.test(normalized)) {
+      return "Try dimming lights and avoiding screens before bed 🌙 A calm bedtime routine can help you relax.";
+    }
+
+    if (/(breathe|breathing|breath)/.test(normalized)) {
+      return "Try this 🌬️ Inhale for 4 seconds, hold for 4, exhale for 6. Repeat a few times and notice how your body feels.";
+    }
+
+    return null;
+  };
 
   // AUTO SCROLL
   useEffect(() => {
@@ -72,6 +166,35 @@ const AIChatPage = () => {
     setInputMessage("");
     setShowQuickResponses(false);
     setShowTyping(true);
+
+    const greetingReply = getGreetingResponse(text);
+    const quickReply = getQuickResponseReply(text);
+
+    if (greetingReply || quickReply) {
+      const replyText = greetingReply || quickReply;
+
+      setTimeout(() => {
+        setShowTyping(false);
+
+        const botMessage = {
+          text: replyText,
+          isUser: false,
+          timestamp: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit"
+          })
+        };
+
+        setMessages((prev) => [
+          ...prev,
+          botMessage
+        ]);
+
+        setShowQuickResponses(true);
+      }, 700);
+
+      return;
+    }
 
     try {
 

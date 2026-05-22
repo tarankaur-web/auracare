@@ -6,6 +6,20 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // User is signed in.
+    // The 'user' object contains information about the signed-in user.
+    // For example, you can get their unique ID:
+    const uid = user.uid;
+    console.log("User is signed in with UID:", uid);
+    // You can now update your UI, fetch user-specific data, etc.
+  } else {
+    // User is signed out.
+    console.log("User is signed out.");
+    // You can now redirect to a login page, clear user data, etc.
+  }
+});
 
 const AuthPage = ({ setIsLoggedIn }) => {
   const [isLogin, setIsLogin] = useState(true);
