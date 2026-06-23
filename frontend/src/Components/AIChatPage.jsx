@@ -6,11 +6,15 @@ const AIChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [showQuickResponses, setShowQuickResponses] = useState(true);
   const [showTyping, setShowTyping] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const chatRef = useRef(null);
 
+  const API_URL =
+    import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+  const API = `${API_URL}/chat`;
   // ✅ CONNECTED TO FLASK BACKEND
-  const API = `${import.meta.env.VITE_API_URL}/chat`;
 
   const QUICK_RESPONSES = [
     "I'm feeling anxious",
@@ -21,14 +25,6 @@ const AIChatPage = () => {
     "I'm having trouble sleeping"
   ];
 
-  const getTimePeriod = () => {
-    const hour = new Date().getHours();
-
-    if (hour < 12) return "morning";
-    if (hour < 18) return "afternoon";
-
-    return "evening";
-  };
 
   const phraseRegex = (phrase) =>
     new RegExp(`(^|\\s)${phrase}(\\s|$)`);
@@ -136,14 +132,15 @@ const AIChatPage = () => {
     if (messages.length > 0) {
       localStorage.setItem(
         "chatHistory",
-        JSON.stringify(messages.slice(-50))
+        JSON.stringify(messages.slice(-20))
       );
     }
   }, [messages]);
 
   // ✅ FINAL BACKEND CONNECTED FUNCTION
   const sendMessage = async (text) => {
-    if (!text.trim()) return;
+    if (!text.trim() || loading) return;
+      setLoading(true);
 
     const userMessage = {
       text,
@@ -163,25 +160,26 @@ const AIChatPage = () => {
     // Greeting Reply
     const greetingReply = getGreetingResponse(text);
 
-    if (greetingReply) {
-      setTimeout(() => {
-        setShowTyping(false);
+   if (greetingReply) {
+  setTimeout(() => {
+    setShowTyping(false);
+    setLoading(false);
 
-        const botMessage = {
-          text: greetingReply,
-          isUser: false,
-          timestamp: new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit"
-          })
-        };
+    const botMessage = {
+      text: greetingReply,
+      isUser: false,
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      })
+    };
 
-        setMessages((prev) => [...prev, botMessage]);
-        setShowQuickResponses(true);
-      }, 700);
+    setMessages((prev) => [...prev, botMessage]);
+    setShowQuickResponses(true);
+  }, 700);
 
-      return;
-    }
+  return;
+}
 
     // Quick Replies
     const quickReply = getQuickResponseReply(text);
@@ -208,18 +206,25 @@ const AIChatPage = () => {
 
     // ✅ BACKEND API CALL
     try {
-      const res = await axios.post(API, {
-        message: text
-      });
+     const history = messages.slice(-6).map((msg) => ({
+     role: msg.isUser ? "user" : "assistant",
+    content: msg.text
+    }));
+
+    const res = await axios.post(API, {
+    message: text,
+    history
+    });
 
       console.log("Backend Response:", res.data);
 
       const reply =
         res.data.response ||
-        "I'm here to support you 💛";
+        "I'm listening. Could you tell me a little more?";
 
       setTimeout(() => {
         setShowTyping(false);
+        setLoading(false);
 
         const botMessage = {
           text: reply,
@@ -236,30 +241,39 @@ const AIChatPage = () => {
       }, 1000);
 
     } catch (error) {
-      console.error(error);
 
-      setShowTyping(false);
+  console.error("FULL ERROR:", error);
 
-      const botMessage = {
-        text:
-          "Cannot connect to AI server ❌ Please check backend.",
-        isUser: false,
-        timestamp: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit"
-        })
-      };
+  let errorMessage = "Cannot connect to AI server";
 
-      setMessages((prev) => [...prev, botMessage]);
-    }
+  if (error.response) {
+    errorMessage =
+      error.response.data?.response ||
+      JSON.stringify(error.response.data);
+  }
+
+  setLoading(false);
+  setShowTyping(false);
+  const botMessage = {
+    text: errorMessage,
+    isUser: false,
+    timestamp: new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit"
+    })
+  };
+
+  setMessages((prev) => [...prev, botMessage]);
+}
   };
 
   const clearChat = () => {
-    localStorage.removeItem("chatHistory");
+  localStorage.removeItem("chatHistory");
 
-    setMessages([]);
-    setShowQuickResponses(true);
-  };
+  setMessages([]);
+  setShowQuickResponses(true);
+};
+  
 
   return (
     <div className="chat-wrapper">
@@ -365,10 +379,10 @@ const AIChatPage = () => {
           />
 
           <button
-            onClick={() => sendMessage(inputMessage)}
-            disabled={!inputMessage.trim()}
-          >
-            Send
+              onClick={() => sendMessage(inputMessage)}
+              disabled={!inputMessage.trim() || loading}
+>
+             {loading ? "Thinking..." : "Send"}
           </button>
 
         </div>
