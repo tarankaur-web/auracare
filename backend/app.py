@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from transformers import pipeline
-import ollama
+import requests
 import os
 
 # ==========================
@@ -21,11 +21,9 @@ MODEL_DIR = os.path.join(BASE_DIR, "model")
 # ==========================
 # LOAD EMOTION MODEL
 # ==========================
-
 classifier = pipeline(
     "text-classification",
-    model=MODEL_DIR,
-    tokenizer=MODEL_DIR
+    model="j-hartmann/emotion-english-distilroberta-base"
 )
 
 EMOTION_MAP = {
@@ -42,67 +40,30 @@ EMOTION_MAP = {
 # ==========================
 
 WELLNESS_RESPONSES = {
-    "fear": (
-        "I can sense that something may be worrying you right now. "
-        "Take a slow breath and remember that you're not facing this alone. "
-        "Would you like to talk about what's causing these feelings?"
-    ),
-    "sadness": (
-        "I'm sorry you're feeling this way. "
-        "It's okay to have difficult days. "
-        "Would you like to share what's been on your mind?"
-    ),
-    "anger": (
-        "That sounds frustrating. "
-        "Would you like to tell me more about what happened?"
-    ),
-    "joy": (
-        "That's wonderful to hear! 😊 "
-        "Would you like to tell me more about it?"
-    ),
-    "love": (
-        "That sounds meaningful. 💛 "
-        "Relationships and connections can be an important source of happiness."
-    ),
-    "surprise": (
-        "That sounds unexpected! 😮 "
-        "How are you feeling about what happened?"
-    )
+    "fear": "I can sense worry. Take a breath — you're safe here. Want to talk?",
+    "sadness": "I'm sorry you're feeling this way. I'm here for you.",
+    "anger": "That sounds frustrating. Tell me what happened.",
+    "joy": "That's wonderful! 😊 Tell me more!",
+    "love": "That sounds meaningful 💛",
+    "surprise": "That sounds unexpected! 😮"
 }
 
 # ==========================
-# CHECK IF MESSAGE IS REALLY ABOUT WELLNESS
+# WELLNESS CHECK
 # ==========================
 
 def is_wellness_message(text):
     text = text.lower()
 
-    wellness_keywords = [
-        "sad",
-        "depressed",
-        "depression",
-        "stress",
-        "stressed",
-        "anxiety",
-        "anxious",
-        "panic",
-        "worried",
-        "fear",
-        "afraid",
-        "lonely",
-        "mental health",
-        "overwhelmed",
-        "upset",
-        "crying",
-        "hopeless",
-        "can't sleep",
-        "sleep problem"
+    keywords = [
+        "sad", "depressed", "stress", "anxious", "panic",
+        "lonely", "hopeless", "crying", "overwhelmed"
     ]
 
-    return any(word in text for word in wellness_keywords)
+    return any(k in text for k in keywords)
 
 # ==========================
-# OLLAMA RESPONSE FUNCTION
+# OLLAMA FUNCTION (FIXED)
 # ==========================
 
 def generate_response(user_message, history):
@@ -110,26 +71,7 @@ def generate_response(user_message, history):
         messages = [
             {
                 "role": "system",
-                "content": """
-You are Auracare AI.
-
-You are:
-- Friendly
-- Helpful
-- Intelligent
-- Conversational
-
-You can answer:
-- General knowledge
-- Programming questions
-- Career guidance
-- Study help
-- Mental wellness
-- Daily conversations
-
-Respond naturally like ChatGPT.
-Keep answers concise unless detailed explanation is requested.
-"""
+                "content": "You are Auracare AI. Be helpful, friendly, and concise."
             }
         ]
 
@@ -144,28 +86,29 @@ Keep answers concise unless detailed explanation is requested.
             "content": user_message
         })
 
-        response = ollama.chat(
-            model="llama3",
-            messages=messages
+        # ✅ FIX: HTTP API instead of import ollama
+        response = requests.post(
+            "http://localhost:11434/api/chat",
+            json={
+                "model": "llama3",
+                "messages": messages,
+                "stream": False
+            }
         )
 
-        return response["message"]["content"]
+        return response.json()["message"]["content"]
 
     except Exception as e:
         print("OLLAMA ERROR:", str(e))
         return f"Ollama Error: {str(e)}"
 
 # ==========================
-# HOME ROUTE
+# ROUTES
 # ==========================
 
 @app.route("/")
 def home():
     return "Auracare Backend Running Successfully"
-
-# ==========================
-# CHAT ROUTE
-# ==========================
 
 @app.route("/chat", methods=["POST"])
 def chat():
@@ -189,17 +132,14 @@ def chat():
 
         print("Emotion:", emotion)
 
-        # Use wellness response ONLY if actual wellness topic
+        # Response logic
         if is_wellness_message(user_message):
             ai_response = WELLNESS_RESPONSES.get(
                 emotion,
-                "I'm here to listen. Tell me more about how you're feeling."
+                "I'm here to listen. Tell me more."
             )
         else:
-            ai_response = generate_response(
-                user_message,
-                history
-            )
+            ai_response = generate_response(user_message, history)
 
         return jsonify({
             "emotion": emotion,
